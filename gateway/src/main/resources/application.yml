@@ -1,0 +1,103 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: gateway
+
+### we need to configure the routing of the requests which will come to the Gateway, to the microservices
+
+  cloud:
+    gateway:
+      discovery:
+
+        # automatic routing of gateway routes  ->  /microserviceName/RequestMappingOfSpecificController
+        # allows the Gateway, to locate the microservices, by using their application.name => not as clean as manually configuring routing, bcs we have to include microservice name in the URL
+        locator:
+          enabled: true
+          lower-case-service-id: true
+
+      ### manually configuring the routing
+
+      - routes[0]:
+          # describes the endpoint
+          id: users-status-check
+          # since the ports are random, I use the lb = load balancer of eureka. this way we can automatically get the port at which the microservice is running
+          uri: lb://users-ws
+          ## predicates are like if conditions. routing will be done only if true
+          # only if request URL path matches, it will be routed successfully
+          predicates[0]: Path=/users-ws/users/status/check
+          predicates[1]: Method=GET
+          # request must have a Bearer token header
+          predicates[2]: Header=Authorization, Bearer (.*)
+          ## can also apply filters
+          # this filter removes the cookies, if request has any. bcs we use JWT. THis is built-in method. we can also have custom filters
+          filters[0]: RemoveRequestHeader=Cookie
+          # use the custom class as a filter. when requests are made, this filter logic will be applied.
+          # will check if jwt token was signed with correct secret key
+          filters[1]: AuthorizationHeaderFilter
+          # another useful filter is: RewritePath=pathOfRequestWhichIWantToTransform, transformedPath
+          filters[2]: RewritePath=/users-ws/(?<segment>.*), /$\{segment}
+
+      # register - no need for header auth or filters for jwt
+      - routes[1]:
+          id: users-ws
+          uri: lb://users-ws
+          predicates[0]: Path=/users-ws/users
+          predicates[1]: Method=POST
+          filters[0]: RemoveRequestHeader=Cookie
+          filters[1]: RewritePath=/users-ws/(?<segment>.*), /$\{segment}
+
+      # login - no need for header auth or filters for jwt
+      - routes[2]:
+          id: users-ws-login
+          uri: lb://users-ws
+          predicates[0]: Path=/users-ws/users/login
+          predicates[1]: Method=POST
+          filters[0]: RemoveRequestHeader=Cookie
+          filters[2]: RewritePath=/users-ws/(?<segment>.*), /$\{segment}
+
+      # TODO: refresh token
+
+      # get, update users
+      - routes[3]:
+          id: users-ws-get-update
+          uri: lb://users-ws
+          predicates[0]: Path=/users-ws/users/**
+          predicates[1]: Method=GET,PUT
+          # request must have a Bearer token header
+          predicates[2]: Header=Authorization, Bearer (.*)
+          filters[0]: RemoveRequestHeader=Cookie
+          # will check if jwt token was signed with correct secret key
+          filters[1]: AuthorizationHeaderFilter
+          filters[2]: RewritePath=/users-ws/(?<segment>.*), /$\{segment}
+
+      # actuator for users-microservice
+      - routes[4]:
+          id: users-ws-actuator
+          uri: lb://users-ws
+          predicates[0]: Path=/users-ws/actuator
+          predicates[1]: Method=GET
+          filters[0]: RemoveRequestHeader=Cookie
+          filters[1]: RewritePath=/users-ws/(?<segment>.*), /$\{segment}
+
+      # add the others
+
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
+## Using the Actuator dependency in the gateway, I can expose different endpoints of it, to the client.
+# some endpoints are enabled by default, for others I have to enable them like below. exposes the beans of the app, health, routes that are configured
+management:
+  endpoints:
+    web:
+      exposure:
+        include: beans, health, routes, httptrace
+
+
+token:
+  secret: doni123donald12345donald54321donald321doni
