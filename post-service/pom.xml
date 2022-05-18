@@ -9,13 +9,12 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.don</groupId>
-    <artifactId>users-service</artifactId>
+    <artifactId>posts-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>users-service</name>
-    <description>users-service</description>
+    <name>posts-service</name>
+    <description>posts-service</description>
     <properties>
         <java.version>17</java.version>
-        <spring-cloud.version>2021.0.2</spring-cloud.version>
     </properties>
     <dependencies>
 
@@ -117,14 +116,14 @@
         </dependency>
 
         <!-- Sleuth & Zipking depencencies for Distributed Tracing -->
-<!--        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-sleuth-zipkin</artifactId>
-            <version>3.1.1</version>
-        </dependency>-->
-
+        <!--        <dependency>
+                    <groupId>org.springframework.cloud</groupId>
+                    <artifactId>spring-cloud-sleuth-zipkin</artifactId>
+                    <version>3.1.1</version>
+                </dependency>-->
 
     </dependencies>
+
     <dependencyManagement>
         <dependencies>
             <dependency>

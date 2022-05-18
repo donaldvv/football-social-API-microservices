@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/users")
 public class UsersMsStatusController {
 
-    @GetMapping("/status")
+    @GetMapping("/status/check")
     public String getStatus() {
         return "Users Microservice is up and working :) ";
     }
