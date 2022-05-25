@@ -4,7 +4,7 @@ server:
 eureka:
   client:
     service-url:
-      defaultZone: http://test:test@localhost:8010/eureka
+      defaultZone: http://test:test@localhost:8761/eureka
   instance:
     prefer-ip-address: true
 
@@ -17,10 +17,10 @@ spring:
   cloud:
     gateway:
       discovery:
-        # automatic routing of gateway routes  ->  /microserviceName/RequestMappingOfSpecificController
+        # automatic routing of gateway routes (enabled: true) ->  /microserviceName/RequestMappingOfSpecificController
         # allows the Gateway, to locate the microservices, by using their application.name => not as clean as manually configuring routing, bcs we have to include microservice name in the URL
         locator:
-          enabled: true
+          enabled: false
           lower-case-service-id: true
 
       ### manually configuring the routing
@@ -35,7 +35,7 @@ spring:
         predicates:
         - Path=/users-ws/users/status/check
         - Method=GET
-        # request must have a Bearer token header
+        # request must have the Authorization header. The second param is the value of this header, and in this case we can write it as a regex (the value must start with Bearer)
         - Header=Authorization, Bearer (.*)
         ## can also apply filters
         filters:
@@ -50,7 +50,7 @@ spring:
                                                               # this request path: /users/status/check
 
       # register - no need for header auth or filters for jwt
-      - id: users-ws
+      - id: users-ws-register
         uri: lb://users-ws
         predicates:
         - Path=/users-ws/users
@@ -69,7 +69,28 @@ spring:
         - RemoveRequestHeader=Cookie
         - RewritePath=/users-ws/(?<segment>.*), /$\{segment}
 
-      # TODO: refresh token
+      # logout - expires refresh token
+      - id: users-ws-logout
+        uri: lb://users-ws
+        predicates:
+          - Path=/users-ws/users/logout
+          - Method=POST
+          - Header=Authorization, Bearer (.*)
+        filters:
+          - RemoveRequestHeader=Cookie
+          - AuthorizationHeaderFilter
+          - RewritePath=/users-ws/(?<segment>.*), /$\{segment}
+
+      # TODO: refresh token  refresh-token
+      # refresh token - no need for header auth or filters for jwt
+      - id: users-ws-refresh-token
+        uri: lb://users-ws
+        predicates:
+          - Path=/users-ws/users/refresh-token
+          - Method=POST
+        filters:
+          - RemoveRequestHeader=Cookie
+          - RewritePath=/users-ws/(?<segment>.*), /$\{segment}
 
       # get, update users
       - id: users-ws-get-update
@@ -104,6 +125,11 @@ spring:
     username: guest
     password: guest
 
+  devtools:
+    restart:
+      quiet-period: 2000
+      poll-interval: 3000
+
 ## Using the Actuator dependency in the gateway, I can expose different endpoints of it, to the client.
 # some endpoints are enabled by default, for others I have to enable them like below. exposes the beans of the app, health, routes that are configured
 management:
@@ -114,4 +140,4 @@ management:
 
 
 token:
-  secret: doni123donald12345donald54321donald321doni
+  secret: urg4897hrk309k99c35vgj45vh8eufk34

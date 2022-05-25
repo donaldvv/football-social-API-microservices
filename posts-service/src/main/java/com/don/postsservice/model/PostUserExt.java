@@ -12,7 +12,6 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@NoArgsConstructor
 @Getter
 @Setter
 @Table(name = "post_user_ext")
@@ -24,6 +23,19 @@ public class PostUserExt {
 
     @Column(nullable = false, name = "user_id_ext")
     private Long userIdExt;
+
+    @Column(name = "first_name", nullable = false)
+    private String firstName;
+
+    @Column(name = "last_name", nullable = false)
+    private String lastName;
+
+    @Column(name = "short_summary")
+    private String shortSummary;
+
+    @Column(name = "profile_photo")
+    private String profilePhoto;
+
 
     // maybe some auditing stuff would be good here
 }
