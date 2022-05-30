@@ -15,15 +15,14 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+/**
+ * @author Donald Veizi
+ */
 @Entity
 @Getter
 @Setter
 @Table(name = "roles")
-public class Role {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class Role extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(length = 25)

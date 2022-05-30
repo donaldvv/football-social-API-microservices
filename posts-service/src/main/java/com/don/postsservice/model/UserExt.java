@@ -4,24 +4,18 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.List;
 
+/**
+ * @author Donald Veizi
+ */
 @Entity
-@Getter
-@Setter
-@Table(name = "post_user_ext")
-public class PostUserExt {
+@Getter @Setter
+@Table(name = "user_ext")
+public class UserExt extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(nullable = false, name = "user_id_ext")
+    @Column(nullable = false, name = "user_id_ext", unique = true)
     private Long userIdExt;
 
     @Column(name = "first_name", nullable = false)
@@ -36,6 +30,11 @@ public class PostUserExt {
     @Column(name = "profile_photo")
     private String profilePhoto;
 
+    @OneToMany(cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY,
+            orphanRemoval = true,
+            mappedBy = "userExt")
+    private List<Post> posts;
 
     // maybe some auditing stuff would be good here
 }

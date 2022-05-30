@@ -7,7 +7,9 @@ import com.don.usersservice.dto.response.JwtResponse;
 import com.don.usersservice.dto.response.RefreshTokenResponse;
 import com.don.usersservice.mapper.UserMapper;
 import com.don.usersservice.model.RefreshToken;
+import com.don.usersservice.model.Role;
 import com.don.usersservice.model.User;
+import com.don.usersservice.model.enums.ERole;
 import com.don.usersservice.repository.RoleRepository;
 import com.don.usersservice.repository.UserRepository;
 import com.don.usersservice.service.AuthenticationService;
@@ -31,8 +33,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * @author Donald Veizi
+ */
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -55,11 +61,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
         // manually set this user as authenticated
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        UserDetails userDetails = userDetailsService.loadUserByUsername(loginRequest.getEmail());
-        String jwtToken = jwtUtil.generateTokenFromUserDetails(userDetails);
+        //UserDetails userDetails = userDetailsService.loadUserByUsername(loginRequest.getEmail());
+        //String jwtToken = jwtUtil.generateTokenFromUserDetails(userDetails);
+        User user = userService.getUserByEmail(loginRequest.getEmail());
+        String jwtToken = jwtUtil.generateTokenFromDBUser(user);
 
-        Collection<String> userRoles = getRolesFromUserDetails(userDetails);
-        UserDTO user = userService.getUserByEmail(loginRequest.getEmail());
+        //Collection<String> userRoles = getRolesFromUserDetails(userDetails);
+        Collection<String> userRoles = getRolesFromUser(user);
+
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(user.getId());
 
         return new JwtResponse(
@@ -98,6 +107,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toSet());
+    }
+
+    private List<String> getRolesFromUser(User user) {
+        return user.getRoles()
+                .stream()
+                .map(Role::getName)
+                .map(ERole::name)
+                .collect(Collectors.toList());
     }
 
 }

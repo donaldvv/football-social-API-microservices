@@ -12,16 +12,15 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * @author Donald Veizi
+ */
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @Table(name = "users")
-public class User {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class User extends BaseEntity {
 
     @Column(nullable = false, length = 55, unique = true)
     @Email
@@ -45,6 +44,11 @@ public class User {
 
     @Column
     private String picture;
+
+    @OneToMany(fetch = FetchType.LAZY,
+                cascade = CascadeType.ALL,
+                mappedBy = "user")
+    private List<UserClub> footballClubs;
 
     @Column(nullable = false)
     private String address;

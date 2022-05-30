@@ -4,11 +4,16 @@ import com.don.usersservice.dto.UserDTO;
 import com.don.usersservice.dto.request.UserRegisterRequest;
 import com.don.usersservice.model.User;
 
+/**
+ * @author Donald Veizi
+ */
 public interface UserService {
 
     UserDTO register(UserRegisterRequest registerRequest);
 
     User getUserById(Long userId);
 
-    UserDTO getUserByEmail(String email);
+    User getUserByEmail(String email);
+
+    UserDTO getUserProfile(Long userId);
 }

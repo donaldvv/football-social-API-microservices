@@ -7,17 +7,15 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.time.Instant;
 
-
+/**
+ * @author Donald Veizi
+ */
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @Table(name = "refresh_tokens")
-public class RefreshToken {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class RefreshToken extends BaseEntity {
 
     @OneToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")

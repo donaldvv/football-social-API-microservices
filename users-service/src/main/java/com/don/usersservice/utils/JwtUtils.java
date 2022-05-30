@@ -13,13 +13,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-
+/**
+ * @author Donald Veizi
+ */
 @Component
 @Slf4j
 public class JwtUtils {
@@ -64,9 +64,9 @@ public class JwtUtils {
     }
 
 
-    public String generateTokenFromUserDetails(UserDetails userDetails) {
+/*    public String generateTokenFromUserDetails(UserDetails userDetails) {
         return tokenBuilderFromUserDetails(userDetails);
-    }
+    }*/
 
     // useful when user will provide refresh token, in order to get a new access token
     public String generateTokenFromDBUser(User user) {
@@ -77,19 +77,20 @@ public class JwtUtils {
         return refreshTokenDuration;
     }
 
-    private String tokenBuilderFromUserDetails(UserDetails userDetails) {
+/*    private String tokenBuilderFromUserDetails(UserDetails userDetails) {
         String username = userDetails.getUsername();
         List<String> roles = getRolesFromUserDetails(userDetails);
         return tokenBuilder(username, roles);
-    }
+    }*/
 
     private String tokenBuilderFromUser(User user) {
+        Long id = user.getId();
         String username = user.getEmail();
         List<String> roles = getRolesFromUser(user);
-        return tokenBuilder(username, roles);
+        return tokenBuilder(id, username, roles);
     }
 
-    private String tokenBuilder(String username,  List<String> roles) {
+    private String tokenBuilder(Long userId, String username, List<String> roles) {
         // the Claims will contain the username and the string represatation of the Authorities (roles) and I will
         // use these values in the Filters of each microservice to set the Spring Security Principal and the spring security will
         // then have all the necessary info for the user (username and roles - will be able to use @PreAuthorize)
@@ -98,10 +99,12 @@ public class JwtUtils {
         claims.put("scope", roles);
         claims.setSubject(username);
 */
+        String userIdentifier = getUserIdentifier(userId, username);
+
         log.debug("Generating token");
         return Jwts.builder()
                 .claim("scope", roles)
-                .setSubject(username)
+                .setSubject(userIdentifier)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs)) // 1h
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)
@@ -121,6 +124,15 @@ public class JwtUtils {
                 .stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
+    }
+
+    /*  Since sub - subject is the claim which holds the user identifier and I want to have both the email and userID
+        into the token, I can store them as a string and "decode" them when needed.  */
+    private String getUserIdentifier(Long userId, String username) {
+        return "USER_ID=" +
+                userId.toString() +
+                ", USERNAME=" +
+                username;
     }
 
     public String getSecret() {

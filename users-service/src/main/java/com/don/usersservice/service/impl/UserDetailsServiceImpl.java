@@ -14,6 +14,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
+/**
+ * @author Donald Veizi
+ */
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)

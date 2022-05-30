@@ -9,6 +9,9 @@ import java.lang.annotation.Target;
 
 import static java.lang.annotation.ElementType.*;
 
+/**
+ * @author Donald Veizi
+ */
 @Target({METHOD, FIELD, ANNOTATION_TYPE, PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented

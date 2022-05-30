@@ -3,6 +3,9 @@ package com.don.usersservice.validator;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
+/**
+ * @author Donald Veizi
+ */
 public class EnumValidatorImpl implements ConstraintValidator<EnumValidator, String> {
 
     private EnumValidator annotation;

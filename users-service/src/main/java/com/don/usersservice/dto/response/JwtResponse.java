@@ -5,6 +5,9 @@ import lombok.Setter;
 
 import java.util.Collection;
 
+/**
+ * @author Donald Veizi
+ */
 @Getter
 @Setter
 public class JwtResponse {

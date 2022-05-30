@@ -16,6 +16,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Instant;
 import java.util.UUID;
 
+/**
+ * @author Donald Veizi
+ */
 @Service
 @Slf4j
 @RequiredArgsConstructor(onConstructor = @__(@Lazy))

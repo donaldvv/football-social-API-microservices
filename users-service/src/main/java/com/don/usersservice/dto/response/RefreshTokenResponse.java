@@ -3,6 +3,9 @@ package com.don.usersservice.dto.response;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * @author Donald Veizi
+ */
 @Getter
 @Setter
 public class RefreshTokenResponse {

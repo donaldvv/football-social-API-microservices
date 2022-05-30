@@ -2,6 +2,7 @@ package com.don.usersservice.mapper;
 
 import com.don.usersservice.dto.UserDTO;
 import com.don.usersservice.dto.request.UserRegisterRequest;
+import com.don.usersservice.event.dto.user.UserMessage;
 import com.don.usersservice.model.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -9,6 +10,9 @@ import org.mapstruct.Mapping;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * @author Donald Veizi
+ */
 @Mapper(componentModel = "spring")
 public interface UserMapper {
 
@@ -25,6 +29,10 @@ public interface UserMapper {
     User registerRequestToUser(UserRegisterRequest registerRequest);
 
     List<UserDTO> usersToUserDTOs(List<User> users);
+
+    @Mapping(target = "userId", source = "id")
+    @Mapping(target="profilePhoto", source = "picture")
+    UserMessage userToUserMessage(User user);
 
     /* // add them later
     @Named(value = "userOverview")

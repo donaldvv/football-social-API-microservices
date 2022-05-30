@@ -13,4 +13,4 @@ public class DiscoveryServerApplication {
     }
 
 }
-// dashboard: localhost:8761
+// dashboard: localhost:8010

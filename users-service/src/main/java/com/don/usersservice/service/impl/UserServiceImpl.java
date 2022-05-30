@@ -2,18 +2,24 @@ package com.don.usersservice.service.impl;
 
 import com.don.usersservice.dto.UserDTO;
 import com.don.usersservice.dto.request.UserRegisterRequest;
+import com.don.usersservice.event.UserEventProducer;
+import com.don.usersservice.event.dto.Message;
+import com.don.usersservice.event.dto.user.UserMessage;
 import com.don.usersservice.exception.ConflictException;
 import com.don.usersservice.exception.EntityNotFoundException;
 import com.don.usersservice.mapper.UserMapper;
 import com.don.usersservice.model.Role;
 import com.don.usersservice.model.User;
+import com.don.usersservice.model.enums.EAction;
 import com.don.usersservice.model.enums.ERole;
 import com.don.usersservice.repository.RoleRepository;
 import com.don.usersservice.repository.UserRepository;
+import com.don.usersservice.service.UserEventPrepare;
 import com.don.usersservice.service.UserService;
 import com.don.usersservice.service.UserTransactionalHelper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,12 +28,16 @@ import java.util.HashSet;
 
 import static com.don.usersservice.model.enums.ERole.values;
 
+/**
+ * @author Donald Veizi
+ */
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private final UserTransactionalHelper transactionalHelper;
+    private final UserEventPrepare userEventPrepare;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
@@ -40,19 +50,22 @@ public class UserServiceImpl implements UserService {
         User userToSave = userMapper.registerRequestToUser(registerRequest);
         setRolesToUserToBeSaved(userToSave, registerRequest);
         User user = userRepository.save(userToSave);
+        // prepares the message in @Async way (in a parallel thread), and sends it to event producer.
+        // This way the current thread that is executing register()
+        // does not have to wait for the message preparation and it being sent by the producer
+        userEventPrepare.produceUserCreatedEvent(user);
         return userMapper.userToUserDTO(user);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public UserDTO getUserByEmail(String email) {
-        User user = userRepository.findByEmail(email)
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email)
                 .orElseThrow(() -> {
                     log.error(String.format("Could not find user with email: %s", email));
-                    return new EntityNotFoundException("No user found with the provided email");
+                    throw new EntityNotFoundException("No user found with the provided email");
                 }
         );
-        return userMapper.userToUserDTO(user);
     }
 
     @Override
@@ -64,6 +77,13 @@ public class UserServiceImpl implements UserService {
                     throw new EntityNotFoundException(
                             String.format("User with id: %s, was not found.", userId));
                 });
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public UserDTO getUserProfile(Long userId) {
+// TODO:
+        return null;
     }
 
     private void verifyEmailNotInUse(String email) {

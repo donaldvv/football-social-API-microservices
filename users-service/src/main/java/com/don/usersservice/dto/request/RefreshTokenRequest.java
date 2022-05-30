@@ -5,6 +5,9 @@ import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
 
+/**
+ * @author Donald Veizi
+ */
 @Getter
 @Setter
 public class RefreshTokenRequest {

@@ -4,7 +4,7 @@ server:
 eureka:
   client:
     service-url:
-      defaultZone: http://test:test@localhost:8761/eureka
+      defaultZone: http://test:test@localhost:8010/eureka
   instance:
     prefer-ip-address: true
 
@@ -116,8 +116,75 @@ spring:
         - RemoveRequestHeader=Cookie
         - RewritePath=/users-ws/(?<segment>.*), /$\{segment}
 
-      # add the others
+      # status check for posts microservice
+      - id: posts-status-check
+        uri: lb://posts-ws
+        predicates:
+          - Path=/posts-ws/posts/status/check
+          - Method=GET
+          - Header=Authorization, Bearer (.*)
+        filters:
+          - RemoveRequestHeader=Cookie
+          - AuthorizationHeaderFilter
+          - RewritePath=/posts-ws/(?<segment>.*), /$\{segment}
 
+      # actuator for posts-microservice
+      - id: posts-ws-actuator
+        uri: lb://posts-ws
+        predicates:
+          - Path=/posts-ws/actuator
+          - Method=GET
+        filters:
+          - RemoveRequestHeader=Cookie
+          - RewritePath=/posts-ws/(?<segment>.*), /$\{segment}
+
+      # get posts of the connections of the user (feed)
+      - id: posts-ws-feed-posts
+        uri: lb://posts-ws
+        predicates:
+          - Path=/posts-ws/posts
+          - Method=GET
+          - Header=Authorization, Bearer (.*)
+        filters:
+          - RemoveRequestHeader=Cookie
+          - AuthorizationHeaderFilter
+          - RewritePath=/posts-ws/(?<segment>.*), /$\{segment}
+
+      # get posts of a certain user
+      - id: posts-ws-feed-posts
+        uri: lb://posts-ws
+        predicates:
+          - Path=/posts-ws/users/{userId:\d+}/posts
+          - Method=GET
+          - Header=Authorization, Bearer (.*)
+        filters:
+          - RemoveRequestHeader=Cookie
+          - AuthorizationHeaderFilter
+          - RewritePath=/posts-ws/(?<segment>.*), /$\{segment}
+
+      # add new post
+      - id: posts-ws-feed-posts
+        uri: lb://posts-ws
+        predicates:
+          - Path=/posts-ws/posts
+          - Method=POST
+          - Header=Authorization, Bearer (.*)
+        filters:
+          - RemoveRequestHeader=Cookie
+          - AuthorizationHeaderFilter
+          - RewritePath=/posts-ws/(?<segment>.*), /$\{segment}
+
+      # different actions on a certain post (like, get comments, add comment)
+      - id: posts-ws-feed-posts
+        uri: lb://posts-ws
+        predicates:
+          - Path=/posts-ws/posts/{postId:\d+}/**
+          - Method=GET,POST,PATCH
+          - Header=Authorization, Bearer (.*)
+        filters:
+          - RemoveRequestHeader=Cookie
+          - AuthorizationHeaderFilter
+          - RewritePath=/posts-ws/(?<segment>.*), /$\{segment}
 
   rabbitmq:
     host: localhost

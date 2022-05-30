@@ -12,7 +12,9 @@ import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.ElementType.TYPE_USE;
 
-
+/**
+ * @author Donald Veizi
+ */
 @Target({METHOD, FIELD, ANNOTATION_TYPE, TYPE_USE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented

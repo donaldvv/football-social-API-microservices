@@ -16,6 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
+/**
+ * @author Donald Veizi
+ */
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
@@ -30,7 +33,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/logout")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
+    @PreAuthorize("hasRole('RECRUITER') or hasRole('USER')")
     public ResponseEntity<String> logout(@Valid @RequestBody RefreshTokenRequest logoutRequest) {
         String message = authenticationService.expireRefreshToken(logoutRequest);
         return new ResponseEntity<>(message, HttpStatus.OK);

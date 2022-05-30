@@ -5,7 +5,9 @@ import com.don.usersservice.dto.request.RefreshTokenRequest;
 import com.don.usersservice.dto.response.JwtResponse;
 import com.don.usersservice.dto.response.RefreshTokenResponse;
 
-
+/**
+ * @author Donald Veizi
+ */
 public interface AuthenticationService {
 
     JwtResponse authenticateUser(LoginRequest loginRequest);

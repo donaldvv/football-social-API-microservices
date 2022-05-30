@@ -3,6 +3,9 @@ package com.don.usersservice.validator;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
+/**
+ * @author Donald Veizi
+ */
 public class RoleEnumValidator implements ConstraintValidator<RoleEnum, String> {
 
     private RoleEnum annotation;

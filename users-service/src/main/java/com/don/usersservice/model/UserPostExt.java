@@ -5,16 +5,15 @@ import lombok.Setter;
 
 import javax.persistence.*;
 
+/**
+ * @author Donald Veizi
+ */
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "user_post_ext")
-public class UserPostExt {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@Table(name = "post_ext")
+public class UserPostExt extends BaseEntity {
 
     // id e user
     @ManyToOne

@@ -17,11 +17,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-/*
-we have not added filters in this microservice. The filters which check if jwt is valid are in the gateway. The users microservice
-handles the login (in the AuthenticationServiceImpl), register, refresh token.
-*/
-
+/**
+ * @author Donald Veizi
+ */
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -38,7 +36,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/user-ws/actuator/**").permitAll() // neccessary for the actuator
+                .antMatchers("/users-ws/actuator/**").permitAll() // neccessary for the actuator
                 .antMatchers("/**").hasIpAddress(environment.getProperty("gateway.ip")) // me sh mundsi jo e nevojshme me spring cloud gateway
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);

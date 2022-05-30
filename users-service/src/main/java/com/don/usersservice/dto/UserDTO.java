@@ -10,6 +10,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
 
+/**
+ * @author Donald Veizi
+ */
 @Getter
 @Setter
 @NoArgsConstructor

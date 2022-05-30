@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
+/**
+ * @author Donald Veizi
+ */
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/users")
