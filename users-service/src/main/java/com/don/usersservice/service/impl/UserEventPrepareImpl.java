@@ -23,9 +23,10 @@ public class UserEventPrepareImpl implements UserEventPrepare {
     private final UserEventProducer userEventProducer;
 
     @Async
-    public void produceUserCreatedEvent(User user) {
+    @Override // pse pa Override kto ??????????????
+    public void produceUserCreatedEvent(final User user) {
         Message<UserMessage> message = new Message<>();
-        UserMessage userMessage = userMapper.userToUserMessage(user);
+        final UserMessage userMessage = userMapper.userToUserMessage(user);
         message.setEntity(userMessage);
         message.setAction(EAction.CREATE);
         sendUserEventMessage(message);
@@ -34,7 +35,7 @@ public class UserEventPrepareImpl implements UserEventPrepare {
     // TODO: UserEditEvent -> after adding edit profile functionality
 
     @Async
-    public void produceUserDeletedEvent(Long userId) {
+    public void produceUserDeletedEvent(final Long userId) { // the consumer should also delete the posts and comments ... for this user
         Message<UserMessage> message = new Message<>();
         UserMessage userMessage = new UserMessage();
         userMessage.setUserId(userId);
@@ -43,7 +44,7 @@ public class UserEventPrepareImpl implements UserEventPrepare {
         sendUserEventMessage(message);
     }
 
-    private void sendUserEventMessage(Message<UserMessage> message) {
+    private void sendUserEventMessage(final Message<UserMessage> message) {
         log.info("SENDING USER WRITE EVENT MESSAGE FROM USER-MS");
         userEventProducer.sendUserWrite(message);
     }

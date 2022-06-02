@@ -31,7 +31,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
 
     @Override
     @Transactional(readOnly = true)
-    public RefreshToken getByToken(String token) {
+    public RefreshToken getByToken(final String token) {
         return refreshTokenRepository.findByToken(token)
                 .orElseThrow(() -> {
                     log.error("Refresh Token not found in the Database");
@@ -40,7 +40,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     }
 
     @Override
-    public void verifyRefreshTokenExpiration(RefreshToken refreshToken) {
+    public void verifyRefreshTokenExpiration(final RefreshToken refreshToken) {
         if (refreshToken.getExpiration().compareTo(Instant.now()) < 0) {
             log.error(String.format("Refresh Token: %s has expired", refreshToken.getToken()));
             refreshTokenRepository.delete(refreshToken);
@@ -51,10 +51,10 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
 
 
     @Override
-    public RefreshToken createRefreshToken(Long userId) {
-        Long refreshTokenDuration = jwtUtil.getRefreshTokenDuration();
-        User user = getUser(userId);
-        RefreshToken refreshTokenToSave = new RefreshToken(
+    public RefreshToken createRefreshToken(final Long userId) {
+        final Long refreshTokenDuration = jwtUtil.getRefreshTokenDuration();
+        final User user = getUser(userId);
+        final RefreshToken refreshTokenToSave = new RefreshToken(
                 user,
                 UUID.randomUUID().toString(),
                 Instant.now().plusMillis(refreshTokenDuration)
@@ -66,6 +66,11 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     public void expireRefreshToken(RefreshToken refreshToken) {
         refreshToken.setExpiration(Instant.now());
         refreshTokenRepository.save(refreshToken);
+    }
+
+    @Override
+    public long deleteTokens(final User user) {
+        return refreshTokenRepository.deleteByUser(user);
     }
 
     private User getUser(Long userId) {

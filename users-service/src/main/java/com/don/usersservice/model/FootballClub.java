@@ -20,5 +20,4 @@ public class FootballClub extends BaseEntity {
 
     @Column
     private String logo;
-
 }

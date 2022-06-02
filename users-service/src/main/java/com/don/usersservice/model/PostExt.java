@@ -13,7 +13,7 @@ import javax.persistence.*;
 @Setter
 @NoArgsConstructor
 @Table(name = "post_ext")
-public class UserPostExt extends BaseEntity {
+public class PostExt extends BaseEntity {
 
     // id e user
     @ManyToOne

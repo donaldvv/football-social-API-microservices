@@ -1,13 +1,9 @@
 package com.don.postsservice.security;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -36,6 +32,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()
                 .authorizeRequests()
+                .antMatchers("/webjars/swagger-ui/**", "/webjars/swagger-ui.html/**", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html/**").permitAll()
                 .antMatchers("/user-ws/actuator/**").permitAll() // neccessary for the actuator
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
@@ -48,7 +45,8 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(org.springframework.security.config.annotation.web.builders.WebSecurity web) throws Exception {
         web.ignoring().mvcMatchers(HttpMethod.OPTIONS, "/**");
-        web.ignoring().mvcMatchers("/swagger-ui.html/**", "/configuration/**", "/swagger-resources/**", "/v2/api-docs", "/webjars/**");
+        web.ignoring().mvcMatchers("/webjars/swagger-ui/**", "/webjars/swagger-ui.html/**", "/swagger-ui.html/**",
+                "/configuration/**", "/swagger-resources/**", "/v3/api-docs/**", "/webjars/**");
     }
 /*
     // the "auth manager" needs the userdetailsService(loadUserByUsername()) & the encoder

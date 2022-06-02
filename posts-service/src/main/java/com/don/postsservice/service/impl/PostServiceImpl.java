@@ -20,7 +20,7 @@ public class PostServiceImpl implements PostService {
 
 
     @Override
-    public PostDTO addPost(PostCreateRequest postCreateRequest, MultipartFile[] pictures) {
+    public PostDTO addPost(final PostCreateRequest postCreateRequest, final MultipartFile[] pictures) {
         return null;
     }
 }

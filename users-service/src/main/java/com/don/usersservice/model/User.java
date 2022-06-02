@@ -5,7 +5,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -16,8 +23,7 @@ import java.util.List;
  * @author Donald Veizi
  */
 @Entity
-@Getter
-@Setter
+@Getter @Setter
 @NoArgsConstructor
 @Table(name = "users")
 public class User extends BaseEntity {
@@ -35,7 +41,7 @@ public class User extends BaseEntity {
     @Column(name = "last_name", nullable = false)
     private String lastName;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)  // cascade mbase sduhet fare, Tek ajo e Seanca 11 e kam EAGER
+    @ManyToMany(fetch = FetchType.EAGER)  // cascade mbase sduhet fare, Tek ajo e Seanca 11 e kam EAGER
     @JoinTable(name = "user_role",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
@@ -45,9 +51,10 @@ public class User extends BaseEntity {
     @Column
     private String picture;
 
+    // no cascade starategy here. will not need .PERSIST or .MERGE in this case bcs we dont need to update or save parent with children together.
+    // when deleting user, we handle the deletion of PostExt without cascade.REMOVE (innefficient bcs deletes each child with seperate statement)
     @OneToMany(fetch = FetchType.LAZY,
-                cascade = CascadeType.ALL,
-                mappedBy = "user")
+            mappedBy = "user")
     private List<UserClub> footballClubs;
 
     @Column(nullable = false)
@@ -70,26 +77,15 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private String gender;
 
-    // all have .ALL strategy, bcs post, comments & likes, life-cycles depend on the user
-    @OneToMany(cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY,
+/*  TODO: determine if we need this reference to the users posts. most likely not. if we want to show in profile the total number of posts that user has,
+     maybe we can add a counter as field and increment or delete it through an event when posts are created or deleted in posts-ws
+    @OneToMany(fetch = FetchType.LAZY,
             mappedBy = "user")
-    private List<UserPostExt> userPostsExt;
-/*
-
-    @OneToMany(cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY,
-            mappedBy = "user")
-    private List<Comment> comments; // maybe i dont need a bidirectional relationship in this case. Might be ok even if a make it just a UniDirectional @ManyToOne in the Comment entity. Bcs i propably wont need to .getComments of this user.
-
-    @OneToMany(cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY,
-            mappedBy = "user")
-    private List<Like> likes;
+    private List<PostExt> postsExt = new ArrayList<>();
 */
-
 
     public void addRole(Role role) {
         roles.add(role);
     }
+
 }

@@ -9,5 +9,5 @@ import org.springframework.web.multipart.MultipartFile;
  */
 public interface PostService {
 
-    PostDTO addPost(PostCreateRequest postCreateRequest, MultipartFile[] pictures);
+    PostDTO addPost(final PostCreateRequest postCreateRequest, final MultipartFile[] pictures);
 }

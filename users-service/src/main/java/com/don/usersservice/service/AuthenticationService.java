@@ -10,9 +10,24 @@ import com.don.usersservice.dto.response.RefreshTokenResponse;
  */
 public interface AuthenticationService {
 
-    JwtResponse authenticateUser(LoginRequest loginRequest);
+    /**
+     * Authenticates the user
+     * @param loginRequest the request that contains credentials
+     * @return {@link JwtResponse}
+     */
+    JwtResponse authenticateUser(final LoginRequest loginRequest);
 
-    RefreshTokenResponse getRefreshedAccessToken(RefreshTokenRequest request);
+    /**
+     * Provides a new access token
+     * @param request {@link RefreshTokenRequest}
+     * @return {@link RefreshTokenResponse}
+     */
+    RefreshTokenResponse getRefreshedAccessToken(final RefreshTokenRequest request);
 
-    String expireRefreshToken(RefreshTokenRequest request);
+    /**
+     * Will make the refresh token invalid - expired
+     * @param request {@link RefreshTokenRequest}
+     * @return success message
+     */
+    String expireRefreshToken(final RefreshTokenRequest request);
 }

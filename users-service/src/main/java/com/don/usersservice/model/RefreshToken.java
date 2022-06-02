@@ -17,7 +17,7 @@ import java.time.Instant;
 @Table(name = "refresh_tokens")
 public class RefreshToken extends BaseEntity {
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 

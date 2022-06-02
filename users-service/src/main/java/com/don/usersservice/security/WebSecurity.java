@@ -36,6 +36,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()
                 .authorizeRequests()
+                .antMatchers("/webjars/swagger-ui/**", "/webjars/swagger-ui.html/**", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html/**").permitAll()
                 .antMatchers("/users-ws/actuator/**").permitAll() // neccessary for the actuator
                 .antMatchers("/**").hasIpAddress(environment.getProperty("gateway.ip")) // me sh mundsi jo e nevojshme me spring cloud gateway
                 .and()
@@ -45,11 +46,11 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
 
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
     }
-
     @Override
     public void configure(org.springframework.security.config.annotation.web.builders.WebSecurity web) throws Exception {
         web.ignoring().mvcMatchers(HttpMethod.OPTIONS, "/**");
-        web.ignoring().mvcMatchers("/swagger-ui.html/**", "/configuration/**", "/swagger-resources/**", "/v2/api-docs", "/webjars/**");
+        web.ignoring().mvcMatchers("/webjars/swagger-ui/**", "/webjars/swagger-ui.html/**", "/swagger-ui.html/**",
+                "/configuration/**", "/swagger-resources/**", "/v3/api-docs/**", "/webjars/**");
     }
 
     // the "auth manager" needs the userdetailsService(loadUserByUsername()) & the encoder

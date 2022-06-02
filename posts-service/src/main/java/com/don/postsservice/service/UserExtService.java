@@ -13,5 +13,5 @@ public interface UserExtService {
      * For simplicity, we assume that the message is always valid (normally we would always need to do validation)
      * @param message the message received from the queue that listens to user related messages
      */
-    void processUserEvent(Message<UserMessage> message);
+    void processUserEvent(final Message<UserMessage> message);
 }

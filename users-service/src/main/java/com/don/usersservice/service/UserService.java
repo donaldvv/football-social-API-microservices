@@ -11,9 +11,11 @@ public interface UserService {
 
     UserDTO register(UserRegisterRequest registerRequest);
 
-    User getUserById(Long userId);
+    User getUserById(final Long userId);
 
-    User getUserByEmail(String email);
+    User getUserByEmail(final String email);
 
-    UserDTO getUserProfile(Long userId);
+    UserDTO getUserProfile(final Long userId);
+
+    void deleteAccount(final Long userId);
 }

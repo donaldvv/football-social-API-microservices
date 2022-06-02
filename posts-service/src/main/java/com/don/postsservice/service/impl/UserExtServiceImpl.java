@@ -25,11 +25,11 @@ public class UserExtServiceImpl implements UserExtService {
     private final UserExtMapper userExtMapper;
 
     @Override
-    public void processUserEvent(Message<UserMessage> message) {
-        EAction action = message.getAction();
+    public void processUserEvent(final Message<UserMessage> message) {
+        final EAction action = message.getAction();
         log.info("USER ACTION = {}", action.name());
 
-        UserMessage userMessage = message.getEntity();
+        final UserMessage userMessage = message.getEntity();
         switch (action) {
             case CREATE, UPDATE -> createOrUpdate(userMessage, action);
             case DELETE -> delete(userMessage);
@@ -37,7 +37,7 @@ public class UserExtServiceImpl implements UserExtService {
         }
     }
 
-    private void createOrUpdate(UserMessage user, EAction action) {
+    private void createOrUpdate(final UserMessage user, final EAction action) {
         if (action.equals(EAction.UPDATE)) {
             Optional<UserExt> dbUserExt = userExtRepository.findByUserIdExt(user.getUserId());
             if (dbUserExt.isEmpty()) {
@@ -50,18 +50,18 @@ public class UserExtServiceImpl implements UserExtService {
         }
     }
 
-    private void delete(UserMessage user) {
+    private void delete(final UserMessage user) {
         userExtRepository.deleteById(user.getUserId());
     }
 
-    private void updateUserExt(UserExt dbUserExt, UserMessage user) {
+    private void updateUserExt(final UserExt dbUserExt, final UserMessage user) {
         UserExt userExt = userExtMapper.userMessageToUserExt(user);
         userExt.setId(dbUserExt.getId());
         userExtRepository.save(userExt);
     }
 
-    private void createUserExt(UserMessage user) {
-        UserExt userExt = userExtMapper.userMessageToUserExt(user);
+    private void createUserExt(final UserMessage user) {
+        final UserExt userExt = userExtMapper.userMessageToUserExt(user);
         userExtRepository.save(userExt);
     }
 
