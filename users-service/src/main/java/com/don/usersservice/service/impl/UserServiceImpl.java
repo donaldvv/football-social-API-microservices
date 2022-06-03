@@ -4,7 +4,7 @@ import com.don.usersservice.dto.UserDTO;
 import com.don.usersservice.dto.request.UserRegisterRequest;
 import com.don.usersservice.exception.ConflictException;
 import com.don.usersservice.exception.EntityNotFoundException;
-import com.don.usersservice.exception.GenericBadRequestException;
+import com.don.usersservice.exception.ForbiddenException;
 import com.don.usersservice.mapper.UserMapper;
 import com.don.usersservice.model.Role;
 import com.don.usersservice.model.User;
@@ -24,6 +24,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 
+import static com.don.usersservice.exception.entity.type.EEntity.ROLE;
+import static com.don.usersservice.exception.entity.type.EEntity.USER;
+import static com.don.usersservice.exception.message.EErrorMessage.CONFLICT_EMAIL_TAKEN;
+import static com.don.usersservice.exception.message.EErrorMessage.FORBIDDEN_DELETE_ACCOUNT;
 import static com.don.usersservice.model.enums.ERole.values;
 
 /**
@@ -63,7 +67,7 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> {
                             log.error(String.format("Could not find user with email: %s", email));
-                            throw new EntityNotFoundException("No user found with the provided email");
+                            throw new EntityNotFoundException(USER, email);
                         }
                 );
     }
@@ -74,8 +78,7 @@ public class UserServiceImpl implements UserService {
         return userRepository.findById(userId)
                 .orElseThrow(() -> {
                     log.error("User with id: {}, was not found!", userId);
-                    throw new EntityNotFoundException(
-                            String.format("User with id: %s, was not found.", userId));
+                    throw new EntityNotFoundException(USER, userId);
                 });
     }
 
@@ -96,13 +99,13 @@ public class UserServiceImpl implements UserService {
 
         final User dbUser = userRepository.findById(userId)
                 .orElseThrow(() -> {
-                    throw new EntityNotFoundException(String.format("User with id: %s, was not found", userId));
+                    throw new EntityNotFoundException(USER, userId);
                 });
 
         if (!loggedUserEmail.equals(dbUser.getEmail())
                 || !dbUser.getId().equals(loggedUserId)) {
             log.error("The user account that should be deleted is not the account of the logged in user");
-            throw new GenericBadRequestException("The account that is being attempted to be deleted, is not the user's account.");
+            throw new ForbiddenException(FORBIDDEN_DELETE_ACCOUNT.getMessage());
         }
 
         userDeleteService.deleteUserAndRelated(dbUser);
@@ -112,10 +115,7 @@ public class UserServiceImpl implements UserService {
     private void verifyEmailNotInUse(final String email) {
         if (email != null && userRepository.existsByEmail(email)) {
             log.error("Account with email {}, already exists. Can't register this user", email);
-            // better to use a checked exception (make it extends Exception and not Runtimeexception) and make method
-            // signiture 'throws XYZUNCHECKED EXCEPTION (for all methods until it has bubbled to controller and general controller advice can handle it)'
-            throw new ConflictException(String.format("Account with email %s, already exists. " +
-                    "Provide another request with different email", email));
+            throw new ConflictException(CONFLICT_EMAIL_TAKEN.getMessage(), email);
         }
     }
 
@@ -128,7 +128,7 @@ public class UserServiceImpl implements UserService {
             for (ERole enumVal : enumValues) {
                 if (roleString.equalsIgnoreCase(enumVal.name())) {
                     Role userRole = roleRepository.findByName(enumVal)
-                            .orElseThrow(() -> new EntityNotFoundException("Role not found!"));
+                            .orElseThrow(() -> new EntityNotFoundException(ROLE));
                     userToSave.addRole(userRole);
                 }
             }

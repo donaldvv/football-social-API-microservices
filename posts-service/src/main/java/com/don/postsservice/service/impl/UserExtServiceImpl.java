@@ -2,14 +2,18 @@ package com.don.postsservice.service.impl;
 
 import com.don.postsservice.event.dto.Message;
 import com.don.postsservice.event.dto.user.UserMessage;
+import com.don.postsservice.exception.EntityNotFoundException;
+import com.don.postsservice.exception.entity.type.EEntity;
 import com.don.postsservice.mapper.UserExtMapper;
 import com.don.postsservice.model.UserExt;
 import com.don.postsservice.model.enums.EAction;
 import com.don.postsservice.repository.UserExtRepository;
+import com.don.postsservice.security.RequestPrincipalContext;
 import com.don.postsservice.service.UserExtService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -22,6 +26,7 @@ import java.util.Optional;
 public class UserExtServiceImpl implements UserExtService {
 
     private final UserExtRepository userExtRepository;
+    private final RequestPrincipalContext requestPrincipalContext;
     private final UserExtMapper userExtMapper;
 
     @Override
@@ -35,6 +40,17 @@ public class UserExtServiceImpl implements UserExtService {
             case DELETE -> delete(userMessage);
             default -> log.error("ACTION INVALID");
         }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public UserExt getLoggedUser() {
+        long userId = requestPrincipalContext.getUserId();
+        return userExtRepository.findByUserIdExt(userId)
+                .orElseThrow(() -> {
+                    log.error("User with the credentials of the authenticated user was not found in the database. User id: {}", userId);
+                    throw new EntityNotFoundException(EEntity.USER, userId);
+                });
     }
 
     private void createOrUpdate(final UserMessage user, final EAction action) {

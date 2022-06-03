@@ -35,7 +35,7 @@ public class Post extends BaseEntity {
     // uses its own set of tables). However, since it would be inefficient to call users microservice to retrieve user data when
     // building a post response, we also store some crucial user data in this ms as well. This would mean we have a significant amount of redundant data,
     // as a tradeoff to making blocking calls to another microservice.
-    @ManyToOne
+    @ManyToOne // TODO: left it eager for now. check if we need to change this
     @JoinColumn(name = "user_ext", referencedColumnName = "id", nullable = false)
     private UserExt userExt;
 

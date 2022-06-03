@@ -1,7 +1,6 @@
-package com.don.usersservice.exception;
+package com.don.postsservice.exception;
 
-import com.don.usersservice.exception.entity.type.EEntity;
-import io.github.wimdeblauwe.errorhandlingspringbootstarter.ResponseErrorCode;
+import com.don.postsservice.exception.entity.type.EEntity;
 import io.github.wimdeblauwe.errorhandlingspringbootstarter.ResponseErrorProperty;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -10,11 +9,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * Custom exception that handles all the NOT FOUND type of exceptions.
  * The actual response will be handled by the imported library.
  *
- * Example: when throw new EntityNotFoundException(EEntity.USER, userId), the response will be
+ * Example: when throw new EntityNotFoundException(EEntity.POST, postId), the response will be
  * {
  *   "code": "ENTITY_NOT_FOUND",
- *   "message": "USER with id: 789  was not found",
- *   "entityName": "USER"
+ *   "message": "POST with id: 789  was not found",
+ *   "entityName": "POST"
  *   "entityId": "789"
  * }
  *

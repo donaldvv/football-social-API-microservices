@@ -1,6 +1,6 @@
 package com.don.usersservice.service.impl;
 
-import com.don.usersservice.exception.TokenRefreshException;
+import com.don.usersservice.exception.badrequest.RefreshTokenException;
 import com.don.usersservice.model.RefreshToken;
 import com.don.usersservice.model.User;
 import com.don.usersservice.repository.RefreshTokenRepository;
@@ -15,6 +15,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.UUID;
+
+import static com.don.usersservice.exception.message.EErrorMessage.REFRESH_TOKEN_EXPIRED;
+import static com.don.usersservice.exception.message.EErrorMessage.REFRESH_TOKEN_NOT_FOUND;
 
 /**
  * @author Donald Veizi
@@ -35,7 +38,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
         return refreshTokenRepository.findByToken(token)
                 .orElseThrow(() -> {
                     log.error("Refresh Token not found in the Database");
-                    throw new TokenRefreshException(token, "Refresh Token not found in the Database");
+                    throw new RefreshTokenException(REFRESH_TOKEN_NOT_FOUND.getMessage());
                 });
     }
 
@@ -45,7 +48,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
             log.error(String.format("Refresh Token: %s has expired", refreshToken.getToken()));
             refreshTokenRepository.delete(refreshToken);
             log.debug("Expired Refresh Token was deleted from the Database");
-            throw new TokenRefreshException(refreshToken.getToken(), "Refresh Token has expired");
+            throw new RefreshTokenException(REFRESH_TOKEN_EXPIRED.getMessage());
         }
     }
 

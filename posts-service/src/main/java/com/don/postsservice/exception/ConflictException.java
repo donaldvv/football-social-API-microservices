@@ -1,4 +1,4 @@
-package com.don.usersservice.exception;
+package com.don.postsservice.exception;
 
 import org.apache.commons.lang3.StringUtils;
 

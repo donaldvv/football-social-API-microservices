@@ -139,6 +139,14 @@
             <artifactId>springdoc-openapi-webmvc-core</artifactId>
             <version>1.5.13</version>
         </dependency>
+
+        <!-- library for exception handling-simplifies the whole process of creating controller advice and custom error responses -->
+        <dependency>
+            <groupId>io.github.wimdeblauwe</groupId>
+            <artifactId>error-handling-spring-boot-starter</artifactId>
+            <version>3.1.0</version>
+        </dependency>
+
     </dependencies>
     <build>
         <plugins>
