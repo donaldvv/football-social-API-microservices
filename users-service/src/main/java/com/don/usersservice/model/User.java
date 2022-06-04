@@ -5,14 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.Email;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -26,7 +19,13 @@ import java.util.List;
 @Getter @Setter
 @NoArgsConstructor
 @Table(name = "users")
-public class User extends BaseEntity {
+public class User {
+
+    @Id
+    @SequenceGenerator(name = "users_sequence", sequenceName = "users_sequence", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "users_sequence")
+    @Column(name = "id", updatable = false)
+    private Long id;
 
     @Column(nullable = false, length = 55, unique = true)
     @Email
@@ -84,8 +83,9 @@ public class User extends BaseEntity {
     private List<PostExt> postsExt = new ArrayList<>();
 */
 
-    public void addRole(Role role) {
+    public User addRole(Role role) {
         roles.add(role);
+        return this;
     }
 
 }

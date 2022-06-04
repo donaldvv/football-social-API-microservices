@@ -14,14 +14,19 @@ import javax.persistence.*;
 @Entity
 @Table(name = "photos")
 @Getter @Setter
-public class Photo extends BaseEntity {
+public class Photo {
+
+    @Id
+    @SequenceGenerator(name = "photos_sequence", sequenceName = "photos_sequence", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "photos_sequence")
+    @Column(name = "id", updatable = false)
+    private Long id;
 
     @Column(nullable = false)
     private String name;
 
     @ManyToOne
     @JoinColumn(name = "post_id", nullable = false)
-    @JsonIgnore
     private Post post;
 
 }

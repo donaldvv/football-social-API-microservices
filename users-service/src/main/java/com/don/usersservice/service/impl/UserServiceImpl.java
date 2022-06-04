@@ -48,6 +48,7 @@ public class UserServiceImpl implements UserService {
     private final RequestPrincipalContext requestPrincipalContext;
 
     @Override
+    @Transactional
     public UserDTO register(UserRegisterRequest registerRequest) {
         verifyEmailNotInUse(registerRequest.getEmail());
         registerRequest.setPassword(passwordEncoder.encode(registerRequest.getPassword()));

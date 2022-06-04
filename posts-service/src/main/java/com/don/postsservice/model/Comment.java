@@ -14,7 +14,13 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "comments")
 @Getter @Setter
-public class Comment extends BaseEntity {
+public class Comment {
+
+    @Id
+    @SequenceGenerator(name = "comments_sequence", sequenceName = "comments_sequence", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "comments_sequence")
+    @Column(name = "id", updatable = false)
+    private Long id;
 
     @Column(nullable = false)
     @Lob

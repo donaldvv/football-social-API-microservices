@@ -6,14 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * @author Donald Veizi
@@ -22,7 +15,13 @@ import javax.persistence.Table;
 @Getter
 @Setter
 @Table(name = "roles")
-public class Role extends BaseEntity {
+public class Role {
+
+    @Id
+    @SequenceGenerator(name = "roles_sequence", sequenceName = "roles_sequence", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "roles_sequence")
+    @Column(name = "id", updatable = false)
+    private Long id;
 
     @Enumerated(EnumType.STRING)
     @Column(length = 25)

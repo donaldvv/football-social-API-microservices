@@ -15,7 +15,13 @@ import java.time.Instant;
 @Setter
 @NoArgsConstructor
 @Table(name = "refresh_tokens")
-public class RefreshToken extends BaseEntity {
+public class RefreshToken {
+
+    @Id
+    @SequenceGenerator(name = "refresh_tokens_sequence", sequenceName = "refresh_tokens_sequence", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "refresh_tokens_sequence")
+    @Column(name = "id", updatable = false)
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")

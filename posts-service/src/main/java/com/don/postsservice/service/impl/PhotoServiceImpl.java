@@ -3,6 +3,7 @@ package com.don.postsservice.service.impl;
 import com.don.postsservice.model.Photo;
 import com.don.postsservice.model.Post;
 import com.don.postsservice.service.PhotoService;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ import static com.don.postsservice.utils.FileUtils.uploadFile;
 /**
  * @author Donald Veizi
  */
+@Service
 public class PhotoServiceImpl implements PhotoService {
 
     public static final String BASE_UPLOAD_DIR = "./photos/";

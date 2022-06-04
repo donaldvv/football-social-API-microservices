@@ -13,7 +13,13 @@ import java.util.List;
 @Entity
 @Getter @Setter
 @Table(name = "user_club")
-public class UserClub extends BaseEntity {
+public class UserClub {
+
+    @Id
+    @SequenceGenerator(name = "user_club_sequence", sequenceName = "user_club_sequence", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_club_sequence")
+    @Column(name = "id", updatable = false)
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)

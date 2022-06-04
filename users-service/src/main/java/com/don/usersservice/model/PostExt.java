@@ -9,11 +9,16 @@ import javax.persistence.*;
  * @author Donald Veizi
  */
 @Entity
-@Getter
-@Setter
+@Getter @Setter
 @NoArgsConstructor
 @Table(name = "post_ext")
-public class PostExt extends BaseEntity {
+public class PostExt {
+
+    @Id
+    @SequenceGenerator(name = "post_ext_sequence", sequenceName = "post_ext_sequence", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "post_ext_sequence")
+    @Column(name = "id", updatable = false)
+    private Long id;
 
     // id e user
     @ManyToOne

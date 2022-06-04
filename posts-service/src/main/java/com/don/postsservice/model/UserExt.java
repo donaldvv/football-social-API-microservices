@@ -1,10 +1,17 @@
 package com.don.postsservice.model;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 import java.util.List;
 
 /**
@@ -13,7 +20,13 @@ import java.util.List;
 @Entity
 @Getter @Setter
 @Table(name = "user_ext")
-public class UserExt extends BaseEntity {
+public class UserExt {
+
+    @Id
+    @SequenceGenerator(name = "user_ext_sequence", sequenceName = "user_ext_sequence", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_ext_sequence")
+    @Column(name = "id", updatable = false)
+    private Long id;
 
     @Column(nullable = false, name = "user_id_ext", unique = true)
     private Long userIdExt;
@@ -30,11 +43,8 @@ public class UserExt extends BaseEntity {
     @Column(name = "profile_photo")
     private String profilePhoto;
 
-    @OneToMany(cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY,
-            orphanRemoval = true,
+    @OneToMany(fetch = FetchType.LAZY,
             mappedBy = "userExt")
     private List<Post> posts;
 
-    // maybe some auditing stuff would be good here
 }
