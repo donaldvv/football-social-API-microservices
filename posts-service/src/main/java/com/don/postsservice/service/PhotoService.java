@@ -11,5 +11,5 @@ import java.util.List;
  */
 public interface PhotoService {
 
-    List<Photo> getProcessedPhotos(final MultipartFile[] files , final Post post);
+    void addProcessedPhotosIntoPost(final MultipartFile[] files , final Post post);
 }

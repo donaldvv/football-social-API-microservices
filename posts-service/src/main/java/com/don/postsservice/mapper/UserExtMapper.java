@@ -1,5 +1,6 @@
 package com.don.postsservice.mapper;
 
+import com.don.postsservice.dto.UserDTO;
 import com.don.postsservice.event.dto.user.UserMessage;
 import com.don.postsservice.model.UserExt;
 import org.mapstruct.Mapper;
@@ -15,4 +16,7 @@ public interface UserExtMapper {
     @Mapping(target="id", ignore = true)
     @Mapping(target="posts", ignore = true)
     UserExt userMessageToUserExt(UserMessage userMessage);
+
+    @Mapping(target = "userId", source = "userIdExt")
+    UserDTO userToUserDTO(UserExt user);
 }

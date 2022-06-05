@@ -16,7 +16,6 @@ public enum EErrorMessage {
 
     CONFLICT_EMAIL_TAKEN("Account with email %s, already exists. Provide another request with different email")
 
-
     ;
 
     private final String message;

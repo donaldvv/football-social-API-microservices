@@ -14,8 +14,9 @@ public enum EErrorMessage {
 
     FORBIDDEN_DELETE_ACCOUNT("User does not have permission to delete this account"),
 
-    CONFLICT_EMAIL_TAKEN("Account with email %s, already exists. Provide another request with different email")
+    CONFLICT_EMAIL_TAKEN("Account with email %s, already exists. Provide another request with different email"),
 
+    USER_IDS_DO_NOT_MATCH("The request userId: %s, does not correspond to the authenticated user")
 
     ;
 

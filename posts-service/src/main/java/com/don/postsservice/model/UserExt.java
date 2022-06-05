@@ -44,7 +44,7 @@ public class UserExt {
     private String profilePhoto;
 
     @OneToMany(fetch = FetchType.LAZY,
-            mappedBy = "userExt")
+            mappedBy = "user")
     private List<Post> posts;
 
 }

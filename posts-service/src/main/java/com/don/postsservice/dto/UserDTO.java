@@ -1,6 +1,5 @@
 package com.don.postsservice.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.Setter;
@@ -8,13 +7,14 @@ import lombok.Setter;
 /**
  * @author Donald Veizi
  */
-@Getter @Setter
+@Getter
+@Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class PhotoDTO {
+public class UserDTO {
 
-    private Long id;
-
-    private String name;
-
-    private Byte[] photoData;
+    private long userId;
+    private String firstName;
+    private String lastName;
+    private String profilePhoto;
+    private String shortSummary;
 }

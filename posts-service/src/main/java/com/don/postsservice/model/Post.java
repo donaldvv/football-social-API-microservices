@@ -45,7 +45,7 @@ public class Post {
     // as a tradeoff to making blocking calls to another microservice.
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_ext", referencedColumnName = "id", nullable = false)
-    private UserExt userExt;
+    private UserExt user;
 
     @Column(nullable = false)
     @Lob
@@ -53,7 +53,7 @@ public class Post {
 
     // we use MERGE, so that when user creates a Post, we can save both post and children (photos) together.
     // We can also update them together (MERGE allows us, while PERSIST only allows saveing together)
-    @OneToMany(cascade = CascadeType.MERGE,
+    @OneToMany(cascade = CascadeType.PERSIST,
             fetch = FetchType.LAZY,
             orphanRemoval = true, // useful when updating post, can remove photo
             mappedBy = "post")

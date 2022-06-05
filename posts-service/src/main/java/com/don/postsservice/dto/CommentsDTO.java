@@ -1,20 +1,20 @@
 package com.don.postsservice.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 /**
  * @author Donald Veizi
  */
 @Getter @Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class PhotoDTO {
+public class CommentsDTO<T> {
 
-    private Long id;
+    private Long postId;
+    private Long postCreatorUserId;
 
-    private String name;
-
-    private Byte[] photoData;
+    private List<T> comments;
 }

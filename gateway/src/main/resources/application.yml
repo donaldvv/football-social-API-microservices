@@ -173,12 +173,12 @@ spring:
           - AuthorizationHeaderFilter
           - RewritePath=/posts-ws/(?<segment>.*), /$\{segment}
 
-      # add new post
+      # add new post or get feed posts
       - id: posts-ws-feed-posts
         uri: lb://posts-ws
         predicates:
           - Path=/posts-ws/posts
-          - Method=POST
+          - Method=POST,GET
           - Header=Authorization, Bearer (.*)
         filters:
           - RemoveRequestHeader=Cookie
@@ -197,27 +197,26 @@ spring:
           - AuthorizationHeaderFilter
           - RewritePath=/posts-ws/(?<segment>.*), /$\{segment}
 
-      # OPENAPI 3
-      # somewhat of a workaround to group the endpoint documentation of each ms separately
+      ### OPENAPI 3
       - id: openapi
         uri: http://localhost:${server.port}
         predicates:
           - Path=/v3/api-docs/**
         filters:
           - RewritePath=/v3/api-docs/(?<path>.*), /$\{path}/v3/api-docs
+      # expose the generated docs from each microservice
       - id: users-ws
         uri: lb://users-ws
         predicates:
-          - Path=/users-ws/**
+          - Path=/users-ws/v3/api-docs
         filters:
           - RewritePath=/users-ws/(?<path>.*), /$\{path}
       - id: posts-ws
         uri: lb://posts-ws
         predicates:
-          - Path=/posts-ws/**
+          - Path=/posts-ws/v3/api-docs
         filters:
           - RewritePath=/posts-ws/(?<path>.*), /$\{path}
-
 
   rabbitmq:
     host: localhost

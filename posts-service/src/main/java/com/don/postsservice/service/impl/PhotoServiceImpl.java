@@ -3,6 +3,7 @@ package com.don.postsservice.service.impl;
 import com.don.postsservice.model.Photo;
 import com.don.postsservice.model.Post;
 import com.don.postsservice.service.PhotoService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,23 +19,25 @@ import static com.don.postsservice.utils.FileUtils.uploadFile;
 @Service
 public class PhotoServiceImpl implements PhotoService {
 
-    public static final String BASE_UPLOAD_DIR = "./photos/";
+    public static final String BASE_UPLOAD_DIR = "C:\\Users\\User\\Pictures\\football-social-photos-dir";
+    @Value("${uploadDir}")
+    private String baseUploadDir;
 
-    public List<Photo> getProcessedPhotos(final MultipartFile[] files , final Post post) {
-        final List<Photo> photos = new ArrayList<>();
+    public void addProcessedPhotosIntoPost(final MultipartFile[] files , final Post post) {
+        //final List<Photo> photos = new ArrayList<>();
         if (files != null && files.length != 0) {
             for (var file : files) {
                 if (!file.isEmpty()) {
                     String cleanFilename = getCleanFilename(file);
-                    uploadFile(BASE_UPLOAD_DIR, file, cleanFilename);
+                    uploadFile(baseUploadDir, file, cleanFilename);
                     Photo photo = new Photo();
                     photo.setName(cleanFilename);
-                    photos.add(photo);
-                    // we set the parent, so that the caller method can save both parent and all its children
+
                     photo.setPost(post);
+                    post.addPhoto(photo);
                 }
             }
         }
-        return photos;
+        //return photos;
     }
 }

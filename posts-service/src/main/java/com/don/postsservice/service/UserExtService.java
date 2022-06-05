@@ -18,7 +18,14 @@ public interface UserExtService {
 
     /**
      * Gets the UserExt (reference to the User in users-service) from the logged user context
-     * @return
+     * @return {@link UserExt}
      */
     UserExt getLoggedUser();
+
+    /**
+     * Retrieves an user by id
+     * @param userId id of user
+     * @return {@link UserExt}
+     */
+    UserExt getUser(final Long userId);
 }

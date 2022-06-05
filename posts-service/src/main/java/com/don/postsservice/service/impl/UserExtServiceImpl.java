@@ -53,6 +53,17 @@ public class UserExtServiceImpl implements UserExtService {
                 });
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public UserExt getUser(final Long userId) {
+        return userExtRepository.findByUserIdExt(userId)
+                .orElseThrow(() -> {
+                    log.error("User with id: {} does not exist", userId);
+                    throw new EntityNotFoundException(EEntity.USER, userId);
+                });
+
+    }
+
     private void createOrUpdate(final UserMessage user, final EAction action) {
         if (action.equals(EAction.UPDATE)) {
             Optional<UserExt> dbUserExt = userExtRepository.findByUserIdExt(user.getUserId());

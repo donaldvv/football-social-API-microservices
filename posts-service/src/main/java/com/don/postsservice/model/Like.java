@@ -21,7 +21,7 @@ public class Like {
 
     @ManyToOne
     @JoinColumn(name = "user_ext", nullable = false)
-    private UserExt userExt;
+    private UserExt user;
 
     @ManyToOne
     @JoinColumn(name = "post_id", nullable = false)
