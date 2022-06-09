@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 /**
  * @author Donald Veizi
  */
-@ResponseStatus(HttpStatus.FORBIDDEN)
+@ResponseStatus(HttpStatus.BAD_REQUEST)
 @ResponseErrorCode("BAD_REQUEST") // add a custom code to the response. default is class name without the Exception part
 public class GeneralBadRequest extends RuntimeException {
 

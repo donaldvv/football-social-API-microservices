@@ -61,8 +61,30 @@ public class UserExtServiceImpl implements UserExtService {
                     log.error("User with id: {} does not exist", userId);
                     throw new EntityNotFoundException(EEntity.USER, userId);
                 });
-
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void verifyUserExists(final Long userId) {
+        boolean exists = userExtRepository.existsById(userId);
+        if (!exists) {
+            log.error("User with id: {} does not exist", userId);
+            throw new EntityNotFoundException(EEntity.USER, userId);
+        }
+    }
+
+    @Override
+    public Long getLoggedUserId() {
+        return requestPrincipalContext.getUserId();
+    }
+
+    // provides only the reference object which contains only ID. Gets used very rarely, mostly in cases where the entity already exists
+    // and we just want to use it to set a relationship with another entity (to set the FK)
+    @Override
+    public UserExt getUserReference(final Long userId) {
+        return userExtRepository.getById(userId);
+    }
+
 
     private void createOrUpdate(final UserMessage user, final EAction action) {
         if (action.equals(EAction.UPDATE)) {

@@ -2,8 +2,9 @@ package com.don.postsservice.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -16,10 +17,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderColumn;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -29,7 +31,10 @@ import java.util.List;
 @Entity
 @Getter @Setter
 @Table(name = "posts")
-public class Post {
+// READ_WRITE -> avoid inconsistencies. we still have write-through caching (when INSERT, as long as we use Sequence, we also store the entity in cache)
+// in our case, since we will often need to UPDATE the likeCount & commentCount, and want the cache to have the right values for these columns of the entity, we use READ_WRITE
+@Cache(usage= CacheConcurrencyStrategy.READ_WRITE)
+public class Post implements Serializable {
 
     @Id
     @SequenceGenerator(name = "posts_sequence", sequenceName = "posts_sequence", allocationSize = 1)
@@ -57,6 +62,7 @@ public class Post {
             fetch = FetchType.LAZY,
             orphanRemoval = true, // useful when updating post, can remove photo
             mappedBy = "post")
+    @OrderColumn
     private List<Photo> photos = new LinkedList<>();
 
     @Column(nullable = false, columnDefinition = "INT DEFAULT '0'")

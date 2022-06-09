@@ -2,10 +2,21 @@ package com.don.postsservice.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
@@ -14,7 +25,10 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "comments")
 @Getter @Setter
-public class Comment {
+// NONSTRICT_READ_WRITE -> inconsistencies between the cache and actual DB data can happend whenever we UPDATE entity. So if entity gets rarely updated & we dont mind small
+// inconsistencies, this strategy is suitable. (in this case only the comment text might get updated, which will propably happen very rarely)
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+public class Comment implements Serializable {
 
     @Id
     @SequenceGenerator(name = "comments_sequence", sequenceName = "comments_sequence", allocationSize = 1)

@@ -16,5 +16,5 @@ public class PhotoDTO {
 
     private String name;
 
-    private Byte[] photoData;
+    private byte[] photoData;
 }

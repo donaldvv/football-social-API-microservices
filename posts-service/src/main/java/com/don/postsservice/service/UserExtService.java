@@ -28,4 +28,10 @@ public interface UserExtService {
      * @return {@link UserExt}
      */
     UserExt getUser(final Long userId);
+
+    void verifyUserExists(final Long userId);
+
+    Long getLoggedUserId();
+
+    UserExt getUserReference(final Long userId);
 }

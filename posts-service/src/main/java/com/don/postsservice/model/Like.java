@@ -2,8 +2,19 @@ package com.don.postsservice.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import java.io.Serializable;
 
 /**
  * @author Donald Veizi
@@ -11,7 +22,9 @@ import javax.persistence.*;
 @Entity
 @Table(name = "likes")
 @Getter @Setter
-public class Like {
+// just like Photo, Likes will either be INSERTed or SELECTed, so READ_ONLY is most suitable
+@Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
+public class Like implements Serializable {
 
     @Id
     @SequenceGenerator(name = "likes_sequence", sequenceName = "likes_sequence", allocationSize = 1)

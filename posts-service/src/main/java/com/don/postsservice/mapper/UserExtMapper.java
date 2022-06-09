@@ -17,6 +17,4 @@ public interface UserExtMapper {
     @Mapping(target="posts", ignore = true)
     UserExt userMessageToUserExt(UserMessage userMessage);
 
-    @Mapping(target = "userId", source = "userIdExt")
-    UserDTO userToUserDTO(UserExt user);
 }

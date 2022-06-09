@@ -7,7 +7,7 @@ import org.mapstruct.*;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring", uses = {PhotoMapper.class, UserExtMapper.class})
+@Mapper(componentModel = "spring")
 public interface PostMapper {
 /*
 
@@ -24,20 +24,41 @@ public interface PostMapper {
 
 
     /**
-     * Will map Post into PostDTO. It does not contain comments of the actuall people who liked the post (use other DTO for those).
-     * The photos will be mapped automatically by the PhotoMapper.class
-     *
+     * Will map Post into PostDTO.
+     * Ignore private UserDTO postOwner; && private List<PhotoDTO> photos;
      * @param post the post that should be mapped into DTO
      * @return {@link PostDTO}
      */
-    @Named(value = "postWithAllDetails")
+    @Named(value = "post_NoUser_NoPhotos")
+    @Mapping(target = "postId", source = "id")
+    @Mapping(target = "postOwner", ignore = true)
+    @Mapping(target = "photos", ignore = true)
+    PostDTO postToPostDTO(Post post);
+/*
+    @IterableMapping(qualifiedByName = "post_NoUser_NoPhotos")
+    List<PostDTO> toPostDTOs(List<Post> posts);
+*/
+/*
+
+    */
+/**
+     * Will map Post into PostDTO.
+     * It does not contain comments of the actual people who liked the post (use other DTO for those).
+     * The photos will be mapped automatically by the PhotoMapper.class (no need to specify
+     * with @Mapping bcs both use 'photos' as field name)
+     *
+     * @param post the post that should be mapped into DTO
+     * @return {@link PostDTO}
+     *//*
+
+    @Named(value = "post_NoComments")
     @Mapping(target = "postId", source = "id")
     @Mapping(target = "postOwner", source = "user") // will be mapped by UserExtMapper.class
-    PostDTO postToPostDTO(Post post);
+    PostDTO postToPostDTOWithUser(Post post);
 
-    @IterableMapping(qualifiedByName = "postWithAllDetails")
-    List<PostDTO> toPostDTOs(List<Post> posts);
-
+    @IterableMapping(qualifiedByName = "post_NoComments")
+    List<PostDTO> toPostDTOsWithUser(List<Post> posts);
+*/
 
 /*
     // used when getting Posts of a specific user. I do not send the user details in this one

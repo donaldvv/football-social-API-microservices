@@ -1,9 +1,12 @@
 package com.don.postsservice.utils;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.ArrayUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -47,5 +50,14 @@ public class FileUtils {
         return LocalDateTime.now().getNano() + StringUtils.cleanPath(Objects.requireNonNull(photo.getOriginalFilename()));
     }
 
+    public static byte[] retrievePhotoData(final String photoPath) {
+        try {
+            final File imageFile = new File(photoPath);
+            return org.apache.commons.io.FileUtils.readFileToByteArray(imageFile);
+        } catch (IOException e) {
+            log.error("IO Exception {}", e.getMessage());
+            return new byte[0];
+        }
+    }
 
 }

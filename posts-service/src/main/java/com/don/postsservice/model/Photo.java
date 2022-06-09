@@ -1,12 +1,20 @@
 package com.don.postsservice.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import java.io.Serializable;
 
 /**
  * @author Donald Veizi
@@ -14,7 +22,10 @@ import javax.persistence.*;
 @Entity
 @Table(name = "photos")
 @Getter @Setter
-public class Photo {
+// this entity will not get updated, so READ_ONLY would be suitable. will throw if we try to UPDATE Photo
+// since we are using sequence, the item will be cached right away when INSERT (and obviously for SELECT)
+@Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
+public class Photo implements Serializable {
 
     @Id
     @SequenceGenerator(name = "photos_sequence", sequenceName = "photos_sequence", allocationSize = 1)

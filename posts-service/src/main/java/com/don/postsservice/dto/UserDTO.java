@@ -9,12 +9,12 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-@JsonInclude(JsonInclude.Include.NON_NULL)
+//@JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserDTO {
 
     private long userId;
     private String firstName;
     private String lastName;
-    private String profilePhoto;
+    private byte[] profilePhotoData;
     private String shortSummary;
 }
