@@ -48,7 +48,6 @@ public class FeedController {
         return new ResponseEntity<>(createdPost, HttpStatus.CREATED);
     }
 
-    // TODO: no logic in service
     @Operation(summary = "Get posts of user's connections")
     @ApiResponse(responseCode = "200", description = "Successfully got the posts")
     @GetMapping("/posts")

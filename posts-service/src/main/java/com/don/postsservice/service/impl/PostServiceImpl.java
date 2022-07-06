@@ -43,7 +43,6 @@ public class PostServiceImpl implements PostService {
     private final PostMapperService postMapperService;
     private final LikeService likeService;
     private final TransactionHelperServiceImpl transactionHelper;
-    private final EntityManager entityManager;
 
     // TODO: make is so that in response i send the post photos as well, not sure . make is so that we do not send user data in response (unnecessary)
     // no need for @Transactional here. we only do processing, 1 SELECT (userExt, which we do no modify) and only
@@ -74,13 +73,45 @@ public class PostServiceImpl implements PostService {
         final Post savedPost = postRepository.save(post); // returns the same post object that we save, but now it has id (also the photos also have their ids now). no extra select is done after the inserts.
 
         final Map<Long, byte[]> photosData = photoService.retrievePhotosData(List.of(savedPost));
-        System.out.println("WTF happened");
+
         return postMapperService.toPostDTOWithPhotos(savedPost, photosData);
     }
 
-    // TODO: this will need the users data in response
+    // TODO: this will need the users data in response. the UserExt will contain field which corresponds to the path where image
+    //  is saved, bcs both MS will save images in same place. We can then retrieve it directly
     @Override
     public PagedResponse<PostDTO> getPosts(final Integer pageNo, final Integer pageSize, final EPostSorting sortBy) {
+
+        // 1- call users-ws and get ids of users that the logged user is connected with
+        // 2- find posts of these users, based on the paging and sorting of the request
+        // 3- find posts that the user has liked, and see if the retrieved posts match with these
+        // return
+
+        // 2nd strategy
+        /*
+            => user-X creates post
+            => retrieve connections of user-X
+            => for each of the connections:
+                    -> create (if not exists) entry in "feeds" table: id | user_ext_id | nrOfPost | extra stuff if needed
+                    -> create entry in "feed_posts" table: id | post_id | maybe add likedByUser here as well | maybe creation date | score if we have an algorythm for this
+                        (1 feed - Many feed_posts => can then get the post ids to return for the feed request)
+            => when request for feed is made:
+                    -> get 20 of the feed_posts of a feed (the one which contains the user_ext_id of the user who made request)
+                    -> based on these feed_posts, retrieve the complete posts (with photos)
+                    -> if we store likedByUser in the feed_posts it will be easier to set this flag in the posts as well.
+
+            *=> can have a job, so that  we delete the feed_posts of a user if they reach a certain value (ex: nrOfPost > 100 -> delete x older feed_posts)
+
+            ------------------------------------------------------------------------------------------------------------
+
+            * How to handle cases when user likes/dislikes a post (which not necessarily is in the feed, bcs user can request the posts of a certain user as well)
+
+            =>
+         */
+
+
+
+
         return null;
     }
 

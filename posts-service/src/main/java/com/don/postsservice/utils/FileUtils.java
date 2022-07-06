@@ -1,8 +1,8 @@
 package com.don.postsservice.utils;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.ArrayUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -11,17 +11,15 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.time.Instant;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.Objects;
 
 /**
  * @author Donald Veizi
  */
 @Slf4j
-public class FileUtils {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class FileUtils {
 
     /**
      * Will save the photo in the directory specified.
@@ -31,8 +29,7 @@ public class FileUtils {
      */
     public static void uploadFile(final String uploadDir, final MultipartFile photo, final  String filename) {
         try {
-            Path path = Paths.get(uploadDir + filename);
-            //Files.copy(photo.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+            final Path path = Paths.get(uploadDir + filename);
             byte[] bytes = photo.getBytes();
             Files.write(path, bytes);
         } catch (IOException e) {
@@ -50,6 +47,11 @@ public class FileUtils {
         return LocalDateTime.now().getNano() + StringUtils.cleanPath(Objects.requireNonNull(photo.getOriginalFilename()));
     }
 
+    /**
+     * Retrieves the photo data from a certain file path
+     * @param photoPath the path
+     * @return the data of the photo
+     */
     public static byte[] retrievePhotoData(final String photoPath) {
         try {
             final File imageFile = new File(photoPath);

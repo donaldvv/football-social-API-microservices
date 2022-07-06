@@ -2,6 +2,7 @@ package com.don.usersservice.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -29,8 +30,9 @@ public class UserClub {
     @JoinColumn(name = "football_club_id", referencedColumnName = "id", nullable = false)
     private FootballClub footballClub;
 
-    @Column(name = "current_club", columnDefinition = "BOOLEAN") //will create column of type tinyint(1)
-    private Boolean isCurrentClub;
+    @Column(name = "current_club", nullable=false, columnDefinition = "BOOLEAN") //will create column of type tinyint(1)
+    // @ColumnDefault("false") TODO: check if i need this
+    private boolean isCurrentClub;
 
     @Column(nullable = false)
     private LocalDate joinedDate;
